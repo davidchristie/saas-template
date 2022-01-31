@@ -1,0 +1,4 @@
+infrastructure/aws/packages/*/build/
+node_modules/
+packages/*/build/
+.turbo
