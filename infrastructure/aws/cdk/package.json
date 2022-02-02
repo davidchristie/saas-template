@@ -16,6 +16,6 @@
     "destroy": "cdk destroy --all --force",
     "diff": "cdk diff",
     "synth": "cdk synth",
-    "test": "jest"
+    "test:unit": "jest unit --coverage --verbose"
   }
 }

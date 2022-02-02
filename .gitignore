@@ -1,4 +1,7 @@
-infrastructure/aws/packages/*/build/
+/apps/*/build/
+/apps/*/coverage/
+/infrastructure/aws/cdk/cdk.out/
+/infrastructure/aws/cdk/coverage/
+/infrastructure/aws/packages/*/build/
+/packages/*/build/
 node_modules/
-packages/*/build/
-.turbo

@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Navigation /> matches snapshot 1`] = `
+<div>
+  <header>
+    <pre>
+      null
+    </pre>
+    <button>
+      Logout
+    </button>
+  </header>
+  <main />
+</div>
+`;
