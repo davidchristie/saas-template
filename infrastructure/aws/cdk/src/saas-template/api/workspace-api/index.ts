@@ -22,7 +22,7 @@ export class WorkspaceApi extends Construct {
 
     const { defaultMethodOptions, rootResource, tableName } = props;
 
-    const dynamoTable = new Table(this, "items", {
+    const dynamoTable = new Table(this, "DynamoTable", {
       partitionKey: {
         name: "id",
         type: AttributeType.STRING,

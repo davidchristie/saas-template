@@ -2,63 +2,63 @@ import {
   CreateOneArgs,
   DeleteOneArgs,
   FindManyArgs,
-  FindOneArgs,
+  Session,
+  SessionRepository,
   UpdateOneArgs,
-  Workspace,
-  WorkspaceRepository,
-} from "@saas/api-workspace-repository";
+} from "@saas/api-session-repository";
 import * as aws from "aws-sdk";
 
-export interface DynamoDBWorkspaceRepositoryProps {
+export interface DynamoDBSessionRepositoryProps {
   client: aws.DynamoDB.DocumentClient;
   tableName: string;
 }
 
-export class DynamoDBWorkspaceRepository implements WorkspaceRepository {
+export class DynamoDBSessionRepository implements SessionRepository {
   private client: aws.DynamoDB.DocumentClient;
   private tableName: string;
 
-  public constructor({ client, tableName }: DynamoDBWorkspaceRepositoryProps) {
+  public constructor({ client, tableName }: DynamoDBSessionRepositoryProps) {
     this.client = client;
     this.tableName = tableName;
   }
 
-  public async createOne(args: CreateOneArgs): Promise<Workspace> {
-    const currentDate = new Date().toISOString();
-    const workspace: Workspace = {
-      id: args.data.id,
-      createdAt: currentDate,
-      updatedAt: currentDate,
-      deletedAt: null,
-      name: args.data.name,
-    };
-
-    await this.client
-      .put({
-        Item: workspace,
-        TableName: this.tableName,
-      })
-      .promise();
-
-    return workspace;
-  }
-
-  public async findOne(args: FindOneArgs): Promise<Workspace | null> {
+  public async findById(id: string): Promise<Session | null> {
     const response = await this.client
       .get({
         TableName: this.tableName,
         Key: {
-          id: args.where.id,
+          id,
         },
       })
       .promise();
 
-    const workspace = (response.Item as Workspace) ?? null;
+    const session = (response.Item as Session) ?? null;
 
-    return workspace;
+    return session;
   }
 
-  public async findMany(args: FindManyArgs): Promise<Workspace[]> {
+  public async createOne(args: CreateOneArgs): Promise<Session> {
+    const currentDate = new Date().toISOString();
+    const session: Session = {
+      id: args.data.id,
+      createdAt: currentDate,
+      updatedAt: currentDate,
+      deletedAt: null,
+      expiresAt: args.data.expiresAt,
+      userId: args.data.userId,
+    };
+
+    await this.client
+      .put({
+        Item: session,
+        TableName: this.tableName,
+      })
+      .promise();
+
+    return session;
+  }
+
+  public async findMany(args: FindManyArgs): Promise<Session[]> {
     const response = await this.client
       .scan({
         Limit: args.limit,
@@ -66,9 +66,9 @@ export class DynamoDBWorkspaceRepository implements WorkspaceRepository {
       })
       .promise();
 
-    const workspaces = (response.Items as Workspace[]) ?? [];
+    const sessions = (response.Items as Session[]) ?? [];
 
-    return workspaces;
+    return sessions;
   }
 
   public async updateOne(args: UpdateOneArgs): Promise<void> {

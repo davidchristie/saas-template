@@ -2,63 +2,84 @@ import {
   CreateOneArgs,
   DeleteOneArgs,
   FindManyArgs,
-  FindOneArgs,
   UpdateOneArgs,
-  Workspace,
-  WorkspaceRepository,
-} from "@saas/api-workspace-repository";
+  User,
+  UserRepository,
+} from "@saas/api-user-repository";
 import * as aws from "aws-sdk";
 
-export interface DynamoDBWorkspaceRepositoryProps {
+export interface DynamoDBUserRepositoryProps {
   client: aws.DynamoDB.DocumentClient;
   tableName: string;
 }
 
-export class DynamoDBWorkspaceRepository implements WorkspaceRepository {
+export class DynamoDBUserRepository implements UserRepository {
   private client: aws.DynamoDB.DocumentClient;
   private tableName: string;
 
-  public constructor({ client, tableName }: DynamoDBWorkspaceRepositoryProps) {
+  public constructor({ client, tableName }: DynamoDBUserRepositoryProps) {
     this.client = client;
     this.tableName = tableName;
   }
 
-  public async createOne(args: CreateOneArgs): Promise<Workspace> {
+  public async createOne(args: CreateOneArgs): Promise<User> {
     const currentDate = new Date().toISOString();
-    const workspace: Workspace = {
+    const user: User = {
       id: args.data.id,
       createdAt: currentDate,
       updatedAt: currentDate,
       deletedAt: null,
-      name: args.data.name,
+      givenName: args.data.givenName,
+      familyName: args.data.familyName,
+      email: args.data.email,
+      password: args.data.password,
     };
 
     await this.client
       .put({
-        Item: workspace,
+        Item: user,
         TableName: this.tableName,
       })
       .promise();
 
-    return workspace;
+    return user;
   }
 
-  public async findOne(args: FindOneArgs): Promise<Workspace | null> {
+  public async findByEmail(email: string): Promise<User | null> {
+    const response = await this.client
+      .scan({
+        ExpressionAttributeValues: {
+          ":email": {
+            S: email,
+          },
+        },
+        FilterExpression: "email = :email",
+        Limit: 1,
+        TableName: this.tableName,
+      })
+      .promise();
+
+    const users = (response.Items as User[]) ?? [];
+
+    return users[0] ?? null;
+  }
+
+  public async findById(id: string): Promise<User | null> {
     const response = await this.client
       .get({
         TableName: this.tableName,
         Key: {
-          id: args.where.id,
+          id,
         },
       })
       .promise();
 
-    const workspace = (response.Item as Workspace) ?? null;
+    const user = (response.Item as User) ?? null;
 
-    return workspace;
+    return user;
   }
 
-  public async findMany(args: FindManyArgs): Promise<Workspace[]> {
+  public async findMany(args: FindManyArgs): Promise<User[]> {
     const response = await this.client
       .scan({
         Limit: args.limit,
@@ -66,9 +87,9 @@ export class DynamoDBWorkspaceRepository implements WorkspaceRepository {
       })
       .promise();
 
-    const workspaces = (response.Items as Workspace[]) ?? [];
+    const users = (response.Items as User[]) ?? [];
 
-    return workspaces;
+    return users;
   }
 
   public async updateOne(args: UpdateOneArgs): Promise<void> {

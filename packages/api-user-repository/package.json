@@ -1,0 +1,4 @@
+{
+  "main": "src/index.ts",
+  "name": "@saas/api-user-repository"
+}

@@ -1,4 +1,6 @@
+import { Method } from "@saas/http";
 import { User } from "../../types/user";
+import { request } from "../requests";
 
 export interface SignupInput {
   email: string;
@@ -12,20 +14,16 @@ export interface SignupResult {
   token: string;
 }
 
-export async function postAuthSignup({
+export function postAuthSignup({
   email,
   familyName,
   givenName,
   password,
 }: SignupInput): Promise<SignupResult> {
-  const response = await fetch("/api/v1/auth/signup", {
-    body: JSON.stringify({
-      email,
-      familyName,
-      givenName,
-      password,
-    }),
-    method: "POST",
+  return request(Method.POST, "/api/v1/auth/signup", {
+    email,
+    familyName,
+    givenName,
+    password,
   });
-  return response.json();
 }
