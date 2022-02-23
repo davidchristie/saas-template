@@ -1,11 +1,11 @@
 import { Method } from "@saas/http";
 import { User } from "../../types/user";
-import { authenticatedQuery } from "../query";
+import { authenticatedRequest } from "../requests";
 
 export interface UserResult {
   data: User | null;
 }
 
-export async function getAuthUser(): Promise<UserResult> {
-  return authenticatedQuery(Method.GET, "/api/v1/auth/user");
+export function getAuthUser(): Promise<UserResult> {
+  return authenticatedRequest(Method.GET, "/api/v1/auth/user");
 }

@@ -1,4 +1,6 @@
+import { Method } from "@saas/http";
 import { User } from "../../types/user";
+import { request } from "../requests";
 
 export interface LoginInput {
   email: string;
@@ -10,16 +12,12 @@ export interface LoginResult {
   token: string;
 }
 
-export async function postAuthLogin({
+export function postAuthLogin({
   email,
   password,
 }: LoginInput): Promise<LoginResult> {
-  const response = await fetch("/api/v1/auth/login", {
-    body: JSON.stringify({
-      email,
-      password,
-    }),
-    method: "POST",
+  return request(Method.POST, "/api/v1/auth/login", {
+    email,
+    password,
   });
-  return response.json();
 }

@@ -1,5 +1,7 @@
 import { FormEventHandler, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/use-auth";
+import { signupPath } from "../../paths";
 
 export function LoginPage(): JSX.Element {
   const auth = useAuth();
@@ -38,6 +40,7 @@ export function LoginPage(): JSX.Element {
         </div>
         <button type="submit">Login</button>
       </form>
+      Go to <Link to={signupPath}>signup</Link>.
     </div>
   );
 }

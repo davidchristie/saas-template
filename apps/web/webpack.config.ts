@@ -10,7 +10,8 @@ export default <Configuration>{
     proxy: {
       "/api": {
         secure: false,
-        target: "http://localhost:4000",
+        changeOrigin: true,
+        target: "https://d2b4wqnv2yzgzn.cloudfront.net",
       },
     },
   },

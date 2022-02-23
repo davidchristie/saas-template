@@ -24,16 +24,30 @@ export interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
   const navigate = useNavigate();
-  const [isLoading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setLoading] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
+  const handleError = (error: unknown) => {
+    if (error instanceof Error) {
+      setError(error);
+    } else {
+      setError(new Error(String(error)));
+    }
+  };
 
   useEffect(() => {
     (async () => {
       if (getAuthToken() !== null) {
-        const user = await getAuthUser();
-        setLoggedInUser(user.data);
+        setLoading(true);
+        try {
+          const user = await getAuthUser();
+          setLoggedInUser(user.data);
+        } catch (error) {
+          handleError(error);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     })();
   }, []);
 
@@ -45,39 +59,55 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
   }: SignupInput) => {
     setLoading(true);
     setLoggedInUser(null);
-    const result = await postAuthSignup({
-      email,
-      familyName,
-      givenName,
-      password,
-    });
+    try {
+      const result = await postAuthSignup({
+        email,
+        familyName,
+        givenName,
+        password,
+      });
+      setLoggedInUser(result.data);
+      setAuthToken(result.token);
+      navigate(overviewPath);
+    } catch (error) {
+      handleError(error);
+    }
     setLoading(false);
-    setLoggedInUser(result.data);
-    setAuthToken(result.token);
-    navigate(overviewPath);
   };
 
   const login = async ({ email, password }: LoginInput) => {
     setLoading(true);
     setLoggedInUser(null);
-    const result = await postAuthLogin({
-      email,
-      password,
-    });
+    try {
+      const result = await postAuthLogin({
+        email,
+        password,
+      });
+      setLoggedInUser(result.data);
+      setAuthToken(result.token);
+      navigate(overviewPath);
+    } catch (error) {
+      handleError(error);
+    }
     setLoading(false);
-    setLoggedInUser(result.data);
-    setAuthToken(result.token);
-    navigate(overviewPath);
   };
 
   const logout = async () => {
     setLoading(true);
     setLoggedInUser(null);
-    await postAuthLogout();
+    try {
+      await postAuthLogout();
+      removeAuthToken();
+      navigate(loginPath);
+    } catch (error) {
+      handleError(error);
+    }
     setLoading(false);
-    removeAuthToken();
-    navigate(loginPath);
   };
+
+  if (error !== null) {
+    return <div>{error.message}</div>;
+  }
 
   const auth: Auth = {
     isLoading,

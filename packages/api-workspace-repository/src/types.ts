@@ -1,12 +1,13 @@
 export interface Workspace {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
   name: string;
 }
 
 export interface CreateOneArgs {
-  data: Omit<Workspace, "createdAt" | "updatedAt">;
+  data: Omit<Workspace, "createdAt" | "updatedAt" | "deletedAt">;
 }
 
 export interface DeleteOneArgs {

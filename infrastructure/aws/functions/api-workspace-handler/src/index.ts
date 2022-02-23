@@ -2,11 +2,12 @@ import { DynamoDBWorkspaceRepository } from "@saas/aws-api-workspace-repository-
 import { DefaultWorkspaceService } from "@saas/api-workspace-service";
 import { APIGatewayProxyHandler } from "aws-lambda";
 import * as aws from "aws-sdk";
+import { errorHandler } from "@saas/aws-api-error-handler";
 
-const tableName = process.env.DYNAMODB_TABLE_NAME;
+const tableName = process.env.WORKSPACE_DYNAMO_TABLE;
 
 if (tableName === undefined) {
-  throw new Error("DYNAMODB_TABLE_NAME must be defined");
+  throw new Error("WORKSPACE_DYNAMO_TABLE must be defined");
 }
 
 const dynamodb = new aws.DynamoDB.DocumentClient();
@@ -24,7 +25,7 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
   console.log("Event:", event);
   console.log("Context:", context);
 
-  try {
+  return errorHandler(async () => {
     const method = event.httpMethod;
 
     // Get ID, if present
@@ -120,13 +121,5 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
       headers: {},
       body: "We only accept GET, POST, and DELETE, not " + method,
     };
-  } catch (error) {
-    const body = JSON.stringify(error, null, 2);
-
-    return {
-      statusCode: 400,
-      headers: {},
-      body: body,
-    };
-  }
+  });
 };
