@@ -14,10 +14,6 @@ export interface SignupArgs {
   password: string;
 }
 
-export interface AuthenticateResult {
-  user: User;
-}
-
 export interface SignupResult {
   user: User;
   token: string;
@@ -42,7 +38,7 @@ export interface AuthenticateArgs {
 }
 
 export interface AuthenticationService {
-  authenticate(args: AuthenticateArgs): Promise<AuthenticateResult>;
+  authenticate(args: AuthenticateArgs): Promise<User>;
   login(args: LoginArgs): Promise<LoginResult>;
   logout(args: LogoutArgs): Promise<void>;
   signup(args: SignupArgs): Promise<SignupResult>;

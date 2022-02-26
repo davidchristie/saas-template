@@ -1,5 +1,5 @@
 import { WorkspaceRepository } from "@saas/api-workspace-repository";
-import { v4 as uuid } from "uuid";
+import { randomUUID } from "crypto";
 import {
   CreateWorkspaceArgs,
   DeleteWorkspaceArgs,
@@ -9,6 +9,8 @@ import {
   Workspace,
   WorkspaceService,
 } from "./types";
+
+export * from "./types";
 
 export interface WorkspaceServiceProps {
   workspaceRepository: WorkspaceRepository;
@@ -32,7 +34,7 @@ export class DefaultWorkspaceService implements WorkspaceService {
   public createWorkspace(args: CreateWorkspaceArgs): Promise<Workspace> {
     return this.workspaceRepository.createOne({
       data: {
-        id: uuid(),
+        id: randomUUID(),
         name: args.name,
       },
     });

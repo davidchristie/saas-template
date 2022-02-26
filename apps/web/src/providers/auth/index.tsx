@@ -1,9 +1,9 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { postAuthLogin } from "../../api/auth/login";
-import { postAuthLogout } from "../../api/auth/logout";
-import { postAuthSignup } from "../../api/auth/signup";
-import { getAuthUser } from "../../api/auth/user";
+import { postLogin } from "../../api/auth/login";
+import { postLogout } from "../../api/auth/logout";
+import { postSignup } from "../../api/auth/signup";
+import { getMe } from "../../api/auth/me";
 import {
   Auth,
   AuthContext,
@@ -41,7 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
       if (getAuthToken() !== null) {
         setLoading(true);
         try {
-          const user = await getAuthUser();
+          const user = await getMe();
           setLoggedInUser(user.data);
         } catch (error) {
           handleError(error);
@@ -60,7 +60,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     setLoading(true);
     setLoggedInUser(null);
     try {
-      const result = await postAuthSignup({
+      const result = await postSignup({
         email,
         familyName,
         givenName,
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     setLoading(true);
     setLoggedInUser(null);
     try {
-      const result = await postAuthLogin({
+      const result = await postLogin({
         email,
         password,
       });
@@ -96,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     setLoading(true);
     setLoggedInUser(null);
     try {
-      await postAuthLogout();
+      await postLogout();
       removeAuthToken();
       navigate(loginPath);
     } catch (error) {

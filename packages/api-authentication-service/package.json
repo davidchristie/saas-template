@@ -1,15 +1,13 @@
 {
   "dependencies": {
-    "@types/bcryptjs": "^2.4.2",
     "bcryptjs": "^2.4.3",
     "date-fns": "^2.28.0",
     "jsonwebtoken": "^8.5.1",
-    "runtypes": "^6.5.1",
-    "uuid": "^8.3.2"
+    "runtypes": "^6.5.1"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^8.5.8",
-    "@types/uuid": "^8.3.4"
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^8.5.8"
   },
   "main": "src/index.ts",
   "name": "@saas/api-authentication-service"

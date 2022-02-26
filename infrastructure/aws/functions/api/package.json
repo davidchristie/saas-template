@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.1062.0",
+    "serverless-http": "^2.7.0"
+  },
+  "name": "@saas/aws-api"
+}

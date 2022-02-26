@@ -3,7 +3,7 @@ import { Construct } from "constructs";
 import { Api } from "./api";
 import { Ui } from "./ui";
 
-export class SaasTemplate extends Stack {
+export class SaasTemplateStack extends Stack {
   public constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 

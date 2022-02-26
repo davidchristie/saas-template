@@ -10,7 +10,7 @@
     "destroy": "npm run destroy --if-present --workspaces",
     "diff": "npm run build && npm run diff --if-present --workspaces",
     "synth": "npm run build && npm run synth --if-present --workspaces",
-    "test:unit": "npm run test:unit --if-present --workspaces"
+    "test:unit": "npm run build && npm run test:unit --if-present --workspaces"
   },
   "workspaces": [
     "apps/*",

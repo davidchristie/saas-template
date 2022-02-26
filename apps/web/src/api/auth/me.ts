@@ -6,6 +6,6 @@ export interface UserResult {
   data: User | null;
 }
 
-export function getAuthUser(): Promise<UserResult> {
-  return authenticatedRequest(Method.GET, "/api/v1/auth/user");
+export function getMe(): Promise<UserResult> {
+  return authenticatedRequest(Method.GET, "/api/v1/me");
 }
