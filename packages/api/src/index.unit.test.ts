@@ -24,14 +24,13 @@ describe("createExpressApp()", () => {
     deleteWorkspace: jest.fn(),
     updateWorkspace: jest.fn(),
   };
-
-  let app: Express;
+  const app = createExpressApp({
+    authenticationService,
+    workspaceService,
+  });
 
   beforeEach(() => {
-    app = createExpressApp({
-      authenticationService,
-      workspaceService,
-    });
+    jest.resetAllMocks();
   });
 
   test("POST /api/v1/signup", async () => {

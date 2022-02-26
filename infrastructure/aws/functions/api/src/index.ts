@@ -14,6 +14,7 @@ import { requiredVariable } from "@saas/environment";
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import * as aws from "aws-sdk";
 import serverless from "serverless-http";
+import { createHandler } from "./handler";
 
 const dynamodb = new aws.DynamoDB.DocumentClient();
 
@@ -39,17 +40,7 @@ const workspaceService = new DefaultWorkspaceService({
   workspaceRepository,
 });
 
-const app = createExpressApp({
+export const handler = createHandler({
   authenticationService,
   workspaceService,
 });
-
-const appHandler = serverless(app);
-
-export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
-  console.log("Event:", event);
-  console.log("Context:", context);
-  const result = await appHandler(event, context);
-  console.log("Result:", result);
-  return result;
-};
