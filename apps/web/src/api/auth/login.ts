@@ -12,11 +12,11 @@ export interface LoginResult {
   token: string;
 }
 
-export function postAuthLogin({
+export function postLogin({
   email,
   password,
 }: LoginInput): Promise<LoginResult> {
-  return request(Method.POST, "/api/v1/auth/login", {
+  return request(Method.POST, "/api/v1/login", {
     email,
     password,
   });

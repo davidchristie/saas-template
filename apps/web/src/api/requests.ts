@@ -1,12 +1,14 @@
-import { Method } from "@saas/http";
-import { getAuthToken } from "../storage/auth/token";
+import { ContentType, Method, Status } from "@saas/http";
+import { getAuthToken, removeAuthToken } from "../storage/auth/token";
 
 export async function authenticatedRequest<T>(
   method: Method,
   path: string
 ): Promise<T> {
   const authToken = getAuthToken();
-  const headers: HeadersInit = {};
+  const headers: HeadersInit = {
+    "Content-Type": ContentType.JSON,
+  };
   if (authToken !== null) {
     headers["Authorization"] = authToken;
   }
@@ -14,12 +16,19 @@ export async function authenticatedRequest<T>(
     headers,
     method,
   });
+  if (response.status === Status.Unauthorized) {
+    removeAuthToken();
+    throw new Error(response.statusText);
+  }
   return response.json();
 }
 
 export async function request<T>(method: Method, path: string, body: unknown) {
   const response = await fetch(path, {
     body: JSON.stringify(body),
+    headers: {
+      "Content-Type": ContentType.JSON,
+    },
     method,
   });
   validateResponse(response);

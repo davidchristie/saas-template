@@ -1,7 +1,7 @@
 export interface Workspace {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   name: string;
 }
 

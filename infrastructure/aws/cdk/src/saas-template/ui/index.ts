@@ -1,18 +1,10 @@
 import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { RestApi } from "aws-cdk-lib/aws-apigateway";
 import {
-  CacheHeaderBehavior,
-  CachePolicy,
   CloudFrontAllowedMethods,
   CloudFrontWebDistribution,
-  Distribution,
   OriginAccessIdentity,
-  OriginRequestCookieBehavior,
-  OriginRequestHeaderBehavior,
-  OriginRequestPolicy,
-  OriginRequestQueryStringBehavior,
 } from "aws-cdk-lib/aws-cloudfront";
-import { HttpOrigin, S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3";
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";

@@ -2,20 +2,22 @@ import { BadRequestError, UnauthorizedError } from "@saas/api-errors";
 import { Session, SessionRepository } from "@saas/api-session-repository";
 import { UserRepository } from "@saas/api-user-repository";
 import { compare, hash } from "bcryptjs";
+import { randomUUID } from "crypto";
 import { addHours, isBefore } from "date-fns";
-import { v4 as uuid } from "uuid";
 import { formatUser } from "./format";
 import { signToken, TokenPayload, verifyToken } from "./tokens";
 import {
   AuthenticateArgs,
-  AuthenticateResult,
   AuthenticationService,
   LoginArgs,
   LoginResult,
   LogoutArgs,
   SignupArgs,
   SignupResult,
+  User,
 } from "./types";
+
+export * from "./types";
 
 export interface DefaultAuthenticationServiceProps {
   jwtSecret: string;
@@ -55,9 +57,7 @@ export class DefaultAuthenticationService implements AuthenticationService {
     this.userRepository = userRepository;
   }
 
-  public async authenticate(
-    args: AuthenticateArgs
-  ): Promise<AuthenticateResult> {
+  public async authenticate(args: AuthenticateArgs): Promise<User> {
     if (args.token === null) {
       throw missingAuthenticationToken;
     }
@@ -78,9 +78,7 @@ export class DefaultAuthenticationService implements AuthenticationService {
       throw new Error("User not found: " + session.userId);
     }
 
-    return {
-      user: formatUser(user),
-    };
+    return formatUser(user);
   }
 
   public async login(args: LoginArgs): Promise<LoginResult> {
@@ -128,15 +126,19 @@ export class DefaultAuthenticationService implements AuthenticationService {
   }
 
   public async signup(args: SignupArgs): Promise<SignupResult> {
+    console.info(">>> signup args:", args);
+
     const user = await this.userRepository.createOne({
       data: {
-        id: uuid(),
+        id: randomUUID(),
         givenName: args.givenName,
         familyName: args.familyName,
         email: args.email,
         password: await hash(args.password, saltRounds),
       },
     });
+
+    console.info(">>> user created:", user);
 
     const session = await this.createSession(user.id);
 
@@ -147,6 +149,8 @@ export class DefaultAuthenticationService implements AuthenticationService {
       this.jwtSecret
     );
 
+    console.info(">>> token generated:", token);
+
     return {
       token,
       user: formatUser(user),
@@ -154,13 +158,15 @@ export class DefaultAuthenticationService implements AuthenticationService {
   }
 
   private createSession(userId: string): Promise<Session> {
-    return this.sessionRepository.createOne({
+    const session = this.sessionRepository.createOne({
       data: {
-        id: uuid(),
+        id: randomUUID(),
         expiresAt: addHours(new Date(), 8).toISOString(),
         userId,
       },
     });
+    console.info(">>> session created:", session);
+    return session;
   }
 
   private async findSessionByToken(token: string): Promise<Session> {

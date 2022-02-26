@@ -14,13 +14,13 @@ export interface SignupResult {
   token: string;
 }
 
-export function postAuthSignup({
+export function postSignup({
   email,
   familyName,
   givenName,
   password,
 }: SignupInput): Promise<SignupResult> {
-  return request(Method.POST, "/api/v1/auth/signup", {
+  return request(Method.POST, "/api/v1/signup", {
     email,
     familyName,
     givenName,

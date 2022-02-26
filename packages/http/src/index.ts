@@ -1,3 +1,7 @@
+export enum ContentType {
+  JSON = "application/json",
+}
+
 export enum Method {
   GET = "GET",
   DELETE = "DELETE",

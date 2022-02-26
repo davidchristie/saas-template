@@ -1,7 +1,0 @@
-{
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.91"
-  },
-  "main": "src/index.ts",
-  "name": "@saas/aws-api-error-handler"
-}
